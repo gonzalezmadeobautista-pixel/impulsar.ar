@@ -60,66 +60,186 @@ footer{text-align:center;color:var(--mut);font-size:13px;padding:20px 16px}
 <span id="auth"></span><a class="btn" href="#/publicar" style="color:#04231f">Publicá tu proyecto</a>
 </div></header>
 <main id="app"></main>
-<footer>Prototipo MVP · Los proyectos de ejemplo son ficticios. Esta versión guarda datos solo en tu navegador (sin servidor). Invertir implica riesgos, incluida la pérdida del capital.</footer>
+<footer>Impulsar · MVP. Invertir o aportar implica riesgos, incluida la pérdida del capital. No garantizamos rentabilidad.</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
+// ====== CONFIGURACIÓN: pegá acá los datos de tu proyecto de Supabase (Settings → API) ======
+var CFG={URL:"https://TU-PROYECTO.supabase.co",KEY:"TU-CLAVE-ANON"};
+// ======================================================================================
 var CATS=["Tecnología e inteligencia artificial","Aplicaciones y software","Alimentos y bebidas","Moda y diseño","Salud y bienestar","Educación","Medioambiente","Industria y producción","Comercio","Servicios","Proyectos sociales","Otros emprendimientos"];
 var PROVS=["Buenos Aires","CABA","Catamarca","Chaco","Chubut","Córdoba","Corrientes","Entre Ríos","Formosa","Jujuy","La Pampa","La Rioja","Mendoza","Misiones","Neuquén","Río Negro","Salta","San Juan","San Luis","Santa Cruz","Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán"];
 var STAGES=["Idea","Prototipo","Primeras ventas","Negocio en crecimiento"];
 var MODES=["Participación","Préstamo","Recompensas / preventa","Aporte sin contraprestación"];
 var MODEINFO={"Participación":"Se aporta capital a cambio de una posible participación societaria. Requiere estructura legal válida y revisión normativa (CNV). Riesgo: pérdida total del capital.","Préstamo":"El emprendedor devuelve el dinero con plazos e intereses acordados. Riesgo: incumplimiento o demoras.","Recompensas / preventa":"El aporte se canjea por un producto o servicio futuro. Riesgo: demoras o que el producto no se concrete.","Aporte sin contraprestación":"Apoyo sin devolución económica esperada."};
-var DEMO=[
-{id:"d1",name:"Alma Textil",cat:"Moda y diseño",desc:"Indumentaria sustentable con fibras recicladas, primera colección cápsula.",goal:5000000,raised:1850000,stage:"Prototipo",prov:"CABA",mode:"Recompensas / preventa",e:"🧵",c:"#d9f2ee",problem:"La moda rápida genera residuos textiles enormes.",sol:"Prendas con 70% de fibra reciclada, producción local en lotes chicos.",use:"Telas 40%, confección 35%, marca y fotos 15%, logística 10%.",team:"2 diseñadoras y 1 contadora."},
-{id:"d2",name:"Kioskito App",cat:"Aplicaciones y software",desc:"App para que pequeños comercios gestionen stock, ventas y fiado.",goal:3200000,raised:960000,stage:"Primeras ventas",prov:"Córdoba",mode:"Participación",e:"📱",c:"#dbe7fb",problem:"Los kioscos llevan todo en cuadernos.",sol:"App simple en celular con control de stock y cuentas corrientes.",use:"Desarrollo 55%, marketing 30%, soporte 15%.",team:"3 desarrolladores y 1 comercial."},
-{id:"d3",name:"Granja Sana",cat:"Alimentos y bebidas",desc:"Snacks saludables de legumbres y semillas, sin conservantes.",goal:2400000,raised:2160000,stage:"Negocio en crecimiento",prov:"Mendoza",mode:"Préstamo",e:"🥜",c:"#fde9c9",problem:"Pocos snacks saludables accesibles.",sol:"Línea de snacks con insumos regionales.",use:"Maquinaria 50%, packaging 25%, capital de trabajo 25%.",team:"Familia productora, 4 personas."},
-{id:"d4",name:"AgroSensor",cat:"Tecnología e inteligencia artificial",desc:"Sensores de bajo costo para medir humedad del suelo y optimizar riego.",goal:8500000,raised:1700000,stage:"Prototipo",prov:"Santa Fe",mode:"Participación",e:"🌾",c:"#e3f3d3",problem:"El riego ineficiente desperdicia agua y rinde menos.",sol:"Sensores con alertas por WhatsApp.",use:"Hardware 45%, I+D 30%, pilotos 25%.",team:"Ing. agrónomo, ingeniero electrónico y data scientist."},
-{id:"d5",name:"ReCiclo Barrio",cat:"Medioambiente",desc:"Red de recolección y reciclaje de plásticos con puntos barriales.",goal:1800000,raised:450000,stage:"Idea",prov:"Tucumán",mode:"Aporte sin contraprestación",e:"♻️",c:"#d6f0e4",problem:"Falta de infraestructura de reciclaje barrial.",sol:"Puntos de acopio y compra de material a cartoneros cooperativos.",use:"Vehículo 50%, balanzas 20%, difusión 30%.",team:"Cooperativa de 6 integrantes."},
-{id:"d6",name:"Aprendé Hoy",cat:"Educación",desc:"Plataforma educativa con tutorías personalizadas para secundaria.",goal:4000000,raised:1000000,stage:"Primeras ventas",prov:"Neuquén",mode:"Recompensas / preventa",e:"🎓",c:"#ece0fa",problem:"Brechas de aprendizaje en matemática y lengua.",sol:"Tutorías online con seguimiento y material adaptado.",use:"Contenidos 40%, plataforma 40%, difusión 20%.",team:"4 docentes y 1 desarrollador."}];
+var ST={borrador:"Borrador",en_revision:"En revisión",publicado:"Publicado",rechazado:"Rechazado"};
+var sb=null,ME=null,PROF=null,FAVS=[],PUB=[],T="proyectos";
 var $=function(s){return document.querySelector(s)};
-function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-var S={user:ld("imp_user",null),favs:ld("imp_favs",[]),mine:ld("imp_mine",[]),msgs:ld("imp_msgs",[]),ints:ld("imp_ints",[])};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
-function ars(n){return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(n)}
+function ars(n){return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(n||0)}
 function fdate(d){return new Date(d).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"})}
-function toast(t){var d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2600)}
-function all(){return DEMO.concat(S.mine.filter(function(p){return p.status==="Publicado"}))}
+function toast(t){var d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2800)}
 function opts(a,sel){return a.map(function(x){return '<option'+(x===sel?' selected':'')+'>'+esc(x)+'</option>'}).join("")}
-function card(p){var pc=Math.round(p.raised/p.goal*100),f=S.favs.indexOf(p.id)>-1;
-return '<div class="card"><div class="thumb" style="background:'+(p.c||"#e6eef8")+'">'+(p.e||"💡")+(p.demo!==false&&String(p.id)[0]==="d"?'<span class="demo">EJEMPLO FICTICIO</span>':'')+'</div><div class="cb"><span class="sm">'+esc(p.cat)+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(p.desc)+'</p><div><span class="tag">📍 '+esc(p.prov)+'</span><span class="tag">'+esc(p.stage)+'</span><span class="tag">'+esc(p.mode)+'</span></div><div class="bar"><b style="width:'+Math.min(pc,100)+'%"></b></div><div class="sm"><b>'+ars(p.raised)+'</b> de '+ars(p.goal)+' · '+pc+'%</div><div class="row" style="margin-top:12px"><a class="btn" href="#/p/'+p.id+'">Ver proyecto</a><button class="btn o" onclick="fav(\''+p.id+'\')">'+(f?'★':'☆')+'</button></div></div></div>'}
-function fav(id){if(!S.user){toast("Iniciá sesión para guardar favoritos");return go("#/entrar")}
-var i=S.favs.indexOf(id);i>-1?S.favs.splice(i,1):S.favs.push(id);sv("imp_favs",S.favs);route()}
 function go(h){location.hash=h}
-function authBar(){$("#auth").innerHTML=S.user?'<a href="#/panel">👤 '+esc(S.user.name)+'</a><button class="l" onclick="logout()">Salir</button>':'<a href="#/entrar">Iniciar sesión</a><a href="#/entrar?r=1">Registrarse</a>'}
-function logout(){S.user=null;sv("imp_user",null);route();toast("Sesión cerrada")}
+function ok(r){if(r.error)throw r.error;return r.data}
+
+/* ---------- sesión ---------- */
+async function setUser(s){
+  ME=s?s.user:null;PROF=null;FAVS=[];
+  if(ME){
+    PROF=(await sb.from("profiles").select("*").eq("id",ME.id).maybeSingle()).data;
+    FAVS=((await sb.from("favorites").select("project_id").eq("user_id",ME.id)).data||[]).map(function(x){return x.project_id});
+  }
+  authBar();
+}
+function authBar(){$("#auth").innerHTML=ME?'<a href="#/panel">👤 '+esc(PROF?PROF.name:"Mi panel")+(PROF&&PROF.is_admin?' · Admin':'')+'</a><button class="l" onclick="logout()">Salir</button>':'<a href="#/entrar">Iniciar sesión</a><a href="#/entrar?r=1">Registrarse</a>'}
+async function logout(){await sb.auth.signOut();go("#/");toast("Sesión cerrada")}
+
+/* ---------- tarjetas ---------- */
+function card(p){
+  var pc=p.goal>0?Math.round(p.raised/p.goal*100):0,f=FAVS.indexOf(p.id)>-1;
+  return '<div class="card"><div class="thumb" style="background:linear-gradient(135deg,#0B1F3A,#14B8A6);color:#fff;font-weight:800">'+esc((p.name||"?").charAt(0).toUpperCase())+'</div><div class="cb"><span class="sm">'+esc(p.category)+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(p.description)+'</p><div><span class="tag">📍 '+esc(p.province)+'</span><span class="tag">'+esc(p.stage)+'</span><span class="tag">'+esc(p.mode)+'</span></div><div class="bar"><b style="width:'+Math.min(pc,100)+'%"></b></div><div class="sm"><b>'+ars(p.raised)+'</b> de '+ars(p.goal)+' · '+pc+'%</div><div class="row" style="margin-top:12px"><a class="btn" href="#/p/'+p.id+'">Ver proyecto</a><button class="btn o" onclick="fav(\''+p.id+'\')">'+(f?'★':'☆')+'</button></div></div></div>';
+}
+async function fav(id){
+  if(!ME){toast("Iniciá sesión para guardar favoritos");return go("#/entrar")}
+  var i=FAVS.indexOf(id);
+  if(i>-1){ok(await sb.from("favorites").delete().eq("user_id",ME.id).eq("project_id",id));FAVS.splice(i,1)}
+  else{ok(await sb.from("favorites").insert({user_id:ME.id,project_id:id}));FAVS.push(id)}
+  route();
+}
+async function pubs(){return ok(await sb.from("projects").select("*").eq("status","publicado").order("created_at",{ascending:false}))||[]}
+
+/* ---------- vistas ---------- */
 var V={};
-V.home=function(){return '<section class="hero"><div><h1>Las grandes ideas necesitan oportunidades.</h1><p>Conectamos emprendedores que buscan financiación con personas que quieren impulsar los próximos grandes proyectos de Argentina.</p><div class="row"><a class="btn" href="#/publicar">Tengo un proyecto</a><a class="btn w" href="#/explorar">Quiero financiar ideas</a></div></div></section><h2>Proyectos destacados</h2><div class="warn">Los proyectos de esta sección son <b>ejemplos ficticios</b> para probar la experiencia. No representan inversiones ni personas reales.</div><div class="grid">'+DEMO.slice(0,3).map(card).join("")+'</div><div class="row"><a class="btn o" href="#/explorar">Ver todos con filtros</a></div><h2>Cómo funciona</h2>'+steps()+'<h2>Confianza y transparencia</h2><div class="steps"><div class="step"><b>🔍 Revisión de proyectos</b><p class="sm">Todo proyecto pasa por revisión manual antes de publicarse.</p></div><div class="step"><b>🪪 Verificación de identidad</b><p class="sm">Prevista como función futura. Hoy no marcamos a nadie como “verificado”.</p></div><div class="step"><b>📄 Condiciones claras</b><p class="sm">Cada modalidad muestra sus condiciones y riesgos. No garantizamos rentabilidad.</p></div></div><div class="cta"><h2 style="margin:0 0 16px">Tu próxima gran oportunidad puede empezar acá.</h2><div class="row" style="justify-content:center"><a class="btn" href="#/publicar">Publicar un proyecto</a><a class="btn w" href="#/explorar">Explorar oportunidades</a></div></div>'};
-function steps(){return '<div class="steps"><div class="step"><span>1</span><h3>Publicá tu idea</h3><p class="sm">Explicá qué necesitás y cuánto dinero requiere tu proyecto.</p></div><div class="step"><span>2</span><h3>Conectá con interesados</h3><p class="sm">Recibí consultas y propuestas de personas que quieren financiarla.</p></div><div class="step"><span>3</span><h3>Desarrollá y compartí avances</h3><p class="sm">Contá cómo avanzás, según los acuerdos establecidos.</p></div></div>'}
-V.como=function(){return '<h2>Cómo funciona</h2>'+steps()+'<h2>Modalidades</h2><div class="grid">'+MODES.map(function(m){return '<div class="step"><b>'+m+'</b><p class="sm">'+MODEINFO[m]+'</p></div>'}).join("")+'</div><div class="warn">⚠️ En esta primera versión Impulsar es un espacio de publicación, descubrimiento y contacto. No procesa pagos ni custodia fondos hasta completar la revisión legal (CNV, prevención de lavado de activos, protección de datos).</div>'};
+function steps(){return '<div class="steps"><div class="step"><span>1</span><h3>Publicá tu idea</h3><p class="sm">Explicá qué necesitás y cuánto dinero requiere tu proyecto.</p></div><div class="step"><span>2</span><h3>Conectá con interesados</h3><p class="sm">Recibí consultas de personas que quieren financiarla.</p></div><div class="step"><span>3</span><h3>Desarrollá y compartí avances</h3><p class="sm">Contá cómo avanzás, según los acuerdos establecidos.</p></div></div>'}
+V.home=async function(){
+  var l=(await pubs()).slice(0,3);
+  return '<section class="hero"><div><h1>Las grandes ideas necesitan oportunidades.</h1><p>Conectamos emprendedores que buscan financiación con personas que quieren impulsar los próximos grandes proyectos de Argentina.</p><div class="row"><a class="btn" href="#/publicar">Tengo un proyecto</a><a class="btn w" href="#/explorar">Quiero financiar ideas</a></div></div></section><h2>Proyectos destacados</h2>'
+  +(l.length?'<div class="grid">'+l.map(card).join("")+'</div><div class="row"><a class="btn o" href="#/explorar">Ver todos con filtros</a></div>':'<div class="panel"><p>Todavía no hay proyectos publicados. ¡Sé el primero en presentar el tuyo!</p><a class="btn" href="#/publicar">Publicar un proyecto</a></div>')
+  +'<h2>Cómo funciona</h2>'+steps()+'<h2>Confianza y transparencia</h2><div class="steps"><div class="step"><b>🔍 Revisión de proyectos</b><p class="sm">Todo proyecto es revisado por el equipo antes de publicarse.</p></div><div class="step"><b>🪪 Verificación de identidad</b><p class="sm">Prevista como función futura. Hoy no marcamos a nadie como “verificado”.</p></div><div class="step"><b>📄 Condiciones claras</b><p class="sm">Cada modalidad muestra sus condiciones y riesgos. No garantizamos rentabilidad.</p></div></div><div class="cta"><h2 style="margin:0 0 16px">Tu próxima gran oportunidad puede empezar acá.</h2><div class="row" style="justify-content:center"><a class="btn" href="#/publicar">Publicar un proyecto</a><a class="btn w" href="#/explorar">Explorar oportunidades</a></div></div>';
+};
+V.como=async function(){return '<h2>Cómo funciona</h2>'+steps()+'<h2>Modalidades</h2><div class="grid">'+MODES.map(function(m){return '<div class="step"><b>'+m+'</b><p class="sm">'+MODEINFO[m]+'</p></div>'}).join("")+'</div><div class="warn">⚠️ Por ahora Impulsar es un espacio de publicación, descubrimiento y contacto. No procesa pagos ni custodia fondos hasta completar la revisión legal (CNV, prevención de lavado de activos, protección de datos).</div>'};
 var F={q:"",cat:"",prov:"",stage:"",mode:"",max:"",sort:"nov",fav:false};
-V.explorar=function(){return '<h2>Explorar proyectos</h2><div class="filters"><input id="fq" placeholder="Buscar…" value="'+esc(F.q)+'"><select id="fc"><option value="">Categoría</option>'+opts(CATS,F.cat)+'</select><select id="fp"><option value="">Provincia</option>'+opts(PROVS,F.prov)+'</select><select id="fs"><option value="">Etapa</option>'+opts(STAGES,F.stage)+'</select><select id="fm"><option value="">Modalidad</option>'+opts(MODES,F.mode)+'</select><select id="fx"><option value="">Monto máx.</option>'+[2000000,5000000,10000000].map(function(v){return '<option value="'+v+'"'+(String(v)===F.max?' selected':'')+'>Hasta '+ars(v)+'</option>'}).join("")+'</select><select id="fo"><option value="nov"'+(F.sort==="nov"?" selected":"")+'>Novedades</option><option value="pct"'+(F.sort==="pct"?" selected":"")+'>% de financiación</option><option value="pop"'+(F.sort==="pop"?" selected":"")+'>Popularidad</option></select></div><label style="display:inline-flex;gap:6px;align-items:center;margin:0 0 14px"><input type="checkbox" id="ff" style="width:auto"'+(F.fav?" checked":"")+'> Solo mis favoritos</label><div class="grid" id="list"></div>'};
-function list(){var r=all().filter(function(p){return(!F.q||(p.name+p.desc+p.cat).toLowerCase().indexOf(F.q.toLowerCase())>-1)&&(!F.cat||p.cat===F.cat)&&(!F.prov||p.prov===F.prov)&&(!F.stage||p.stage===F.stage)&&(!F.mode||p.mode===F.mode)&&(!F.max||p.goal<=+F.max)&&(!F.fav||S.favs.indexOf(p.id)>-1)});
-if(F.sort==="pct")r.sort(function(a,b){return b.raised/b.goal-a.raised/a.goal});else if(F.sort==="pop")r.sort(function(a,b){return b.raised-a.raised});else r.reverse();
-$("#list").innerHTML=r.length?r.map(card).join(""):'<p class="sm">No hay proyectos con esos filtros.</p>'}
+V.explorar=async function(){
+  PUB=await pubs();
+  return '<h2>Explorar proyectos</h2><div class="filters"><input id="fq" placeholder="Buscar…" value="'+esc(F.q)+'"><select id="fc"><option value="">Categoría</option>'+opts(CATS,F.cat)+'</select><select id="fp"><option value="">Provincia</option>'+opts(PROVS,F.prov)+'</select><select id="fs"><option value="">Etapa</option>'+opts(STAGES,F.stage)+'</select><select id="fm"><option value="">Modalidad</option>'+opts(MODES,F.mode)+'</select><select id="fx"><option value="">Monto máx.</option>'+[2000000,5000000,10000000,50000000].map(function(v){return '<option value="'+v+'"'+(String(v)===F.max?' selected':'')+'>Hasta '+ars(v)+'</option>'}).join("")+'</select><select id="fo"><option value="nov"'+(F.sort==="nov"?" selected":"")+'>Novedades</option><option value="pct"'+(F.sort==="pct"?" selected":"")+'>% de financiación</option><option value="pop"'+(F.sort==="pop"?" selected":"")+'>Monto recaudado</option></select></div><label style="display:inline-flex;gap:6px;align-items:center;margin:0 0 14px"><input type="checkbox" id="ff" style="width:auto"'+(F.fav?" checked":"")+'> Solo mis favoritos</label><div class="grid" id="list"></div>';
+};
+function list(){
+  var r=PUB.filter(function(p){return(!F.q||(p.name+p.description+p.category).toLowerCase().indexOf(F.q.toLowerCase())>-1)&&(!F.cat||p.category===F.cat)&&(!F.prov||p.province===F.prov)&&(!F.stage||p.stage===F.stage)&&(!F.mode||p.mode===F.mode)&&(!F.max||p.goal<=+F.max)&&(!F.fav||FAVS.indexOf(p.id)>-1)});
+  if(F.sort==="pct")r.sort(function(a,b){return b.raised/b.goal-a.raised/a.goal});else if(F.sort==="pop")r.sort(function(a,b){return b.raised-a.raised});
+  $("#list").innerHTML=r.length?r.map(card).join(""):'<p class="sm">No hay proyectos que coincidan.</p>';
+}
 function bindF(){[["fq","q"],["fc","cat"],["fp","prov"],["fs","stage"],["fm","mode"],["fx","max"],["fo","sort"]].forEach(function(x){$("#"+x[0]).oninput=function(){F[x[1]]=this.value;list()}});$("#ff").onchange=function(){F.fav=this.checked;list()};list()}
-V.proyecto=function(id){var p=all().find(function(x){return x.id===id});if(!p)return '<h2>Proyecto no encontrado</h2>';var pc=Math.round(p.raised/p.goal*100),f=S.favs.indexOf(p.id)>-1;
-return '<h2>'+(p.e||"💡")+' '+esc(p.name)+'</h2>'+(String(p.id)[0]==="d"?'<div class="warn">Proyecto de <b>demostración ficticio</b>. Los montos no son reales.</div>':'')+'<div class="two"><div><div class="panel"><h3>Problema</h3><p>'+esc(p.problem)+'</p><h3>Solución</h3><p>'+esc(p.sol)+'</p><h3>Destino de los fondos</h3><p>'+esc(p.use)+'</p><h3>Equipo</h3><p>'+esc(p.team)+'</p></div><div class="panel"><h3>Modalidad: '+esc(p.mode)+'</h3><p>'+MODEINFO[p.mode]+'</p><div class="warn">Esta modalidad está sujeta a revisión legal. Invertir o aportar implica riesgos y no se garantiza rentabilidad.</div></div></div><div><div class="panel"><span class="tag">'+esc(p.cat)+'</span><span class="tag">📍 '+esc(p.prov)+'</span><span class="tag">'+esc(p.stage)+'</span><h3 style="margin:10px 0 0">'+ars(p.raised)+'</h3><div class="sm">recaudado de '+ars(p.goal)+'</div><div class="bar"><b style="width:'+Math.min(pc,100)+'%"></b></div><div class="sm">'+pc+'% alcanzado</div><div class="row"><button class="btn" onclick="contact(\''+p.id+'\')">Contactar al creador</button><button class="btn o" onclick="interest(\''+p.id+'\')">Expresar interés</button><button class="btn o" onclick="fav(\''+p.id+'\')">'+(f?'★ Guardado':'☆ Guardar')+'</button></div><p class="sm">“Expresar interés” no es un compromiso ni suma dinero al indicador.</p></div></div></div>'};
-function contact(id){if(!S.user){toast("Iniciá sesión para contactar");return go("#/entrar")}
-var m=document.createElement("div");m.className="modal";m.innerHTML='<div><h3>Enviar mensaje</h3><textarea id="mt" rows="5" maxlength="1000" placeholder="Presentate y contá qué te interesa…"></textarea><p class="sm">No compartas datos bancarios ni contraseñas. Podés denunciar conversaciones sospechosas.</p><div class="row"><button class="btn" id="ms">Enviar</button><button class="btn o" id="mc">Cancelar</button></div></div>';document.body.appendChild(m);
-$("#mc").onclick=function(){m.remove()};$("#ms").onclick=function(){var t=$("#mt").value.trim();if(t.length<10)return toast("Escribí al menos 10 caracteres");S.msgs.push({pid:id,t:t,d:Date.now()});sv("imp_msgs",S.msgs);m.remove();toast("Mensaje enviado (guardado en tu panel)")}}
-function interest(id){if(!S.user){toast("Iniciá sesión primero");return go("#/entrar")}if(S.ints.indexOf(id)<0){S.ints.push(id);sv("imp_ints",S.ints)}toast("Interés registrado")}
-V.entrar=function(){var reg=location.hash.indexOf("r=1")>-1;return '<div class="panel" style="max-width:440px;margin:40px auto"><h2 style="margin-top:0">'+(reg?"Crear cuenta":"Iniciar sesión")+'</h2><div class="warn">Demo local: la cuenta se guarda solo en este navegador. La autenticación real (Supabase) es el próximo paso.</div><label>Nombre o nombre comercial</label><input id="un"><label>Correo electrónico</label><input id="ue" type="email"><label>Rol</label><select id="ur"><option>Emprendedor</option><option>Inversor</option><option>Ambos</option></select><div class="row"><button class="btn" onclick="login()">Continuar</button></div></div>'};
-function login(){var n=$("#un").value.trim(),e=$("#ue").value.trim();if(!n||!/^\S+@\S+\.\S+$/.test(e))return toast("Completá nombre y un correo válido");S.user={name:n,email:e,role:$("#ur").value,since:Date.now()};sv("imp_user",S.user);go("#/panel");toast("¡Bienvenido/a!")}
-V.publicar=function(){if(!S.user)return '<div class="panel" style="margin-top:30px"><h2 style="margin-top:0">Publicá tu proyecto</h2><p>Necesitás una cuenta para publicar.</p><a class="btn" href="#/entrar?r=1">Registrarme</a></div>';
-return '<h2>Publicar un proyecto</h2><div class="panel"><label>Nombre del proyecto</label><input id="n" maxlength="80"><label>Descripción breve</label><input id="d" maxlength="160"><label>Problema que resuelve</label><textarea id="pr" rows="3"></textarea><label>Solución propuesta</label><textarea id="so" rows="3"></textarea><label>Categoría</label><select id="c">'+opts(CATS)+'</select><label>Provincia</label><select id="pv">'+opts(PROVS)+'</select><label>Etapa</label><select id="st">'+opts(STAGES)+'</select><label>Monto necesario (ARS)</label><input id="g" type="number" min="1000"><label>Desglose del uso de fondos</label><textarea id="u" rows="3"></textarea><label>Equipo</label><input id="t"><label>Modalidad de financiación</label><select id="m">'+opts(MODES)+'</select><div class="warn">Antes de hacerse público, tu proyecto queda “En revisión”. Aún no se pueden subir imágenes ni documentos (próxima etapa).</div><div class="row"><button class="btn o" onclick="saveP(\'Borrador\')">Guardar borrador</button><button class="btn" onclick="saveP(\'En revisión\')">Enviar a revisión</button></div></div>'};
-function saveP(status){var g=+$("#g").value,n=$("#n").value.trim();if(n.length<3||!(g>0))return toast("Poné un nombre y un monto válido");
-S.mine.push({id:"u"+Date.now(),name:n,desc:$("#d").value.trim()||"Sin descripción",problem:$("#pr").value,sol:$("#so").value,use:$("#u").value,team:$("#t").value,cat:$("#c").value,prov:$("#pv").value,stage:$("#st").value,goal:g,raised:0,mode:$("#m").value,status:status,created:Date.now(),log:[{s:status,d:Date.now()}]});sv("imp_mine",S.mine);toast(status==="Borrador"?"Borrador guardado":"Enviado a revisión");go("#/panel")}
-function approve(id){var p=S.mine.find(function(x){return x.id===id});p.status="Publicado";p.log.push({s:"Publicado",d:Date.now()});sv("imp_mine",S.mine);route()}
-V.panel=function(){if(!S.user)return V.entrar();var mine=S.mine,favs=all().filter(function(p){return S.favs.indexOf(p.id)>-1});
-return '<h2>Hola, '+esc(S.user.name)+'</h2><div class="stat"><div><b>'+mine.length+'</b>Proyectos</div><div><b>'+favs.length+'</b>Favoritos</div><div><b>'+S.ints.length+'</b>Intereses</div><div><b>'+S.msgs.length+'</b>Mensajes enviados</div></div><div class="panel"><h3>Mis proyectos</h3>'+(mine.length?mine.map(function(p){return '<p><b>'+esc(p.name)+'</b> · '+ars(p.goal)+' · <span class="tag">'+p.status+'</span> <span class="sm">'+p.log.map(function(l){return l.s+" "+fdate(l.d)}).join(" → ")+'</span> '+(p.status==="En revisión"?'<button class="btn o" style="padding:4px 10px;font-size:12px" onclick="approve(\''+p.id+'\')">Simular aprobación (admin demo)</button>':'')+'</p>'}).join(""):'<p class="sm">Todavía no publicaste proyectos. <a href="#/publicar"><u>Publicar uno</u></a></p>')+'</div><div class="panel"><h3>Favoritos</h3><div class="grid">'+(favs.map(card).join("")||'<p class="sm">Sin favoritos.</p>')+'</div></div><div class="panel"><h3>Mensajes enviados</h3>'+(S.msgs.map(function(m){var p=all().find(function(x){return x.id===m.pid});return '<p class="sm"><b>'+esc(p?p.name:"Proyecto")+'</b> · '+fdate(m.d)+'<br>'+esc(m.t)+'</p>'}).join("")||'<p class="sm">Sin mensajes.</p>')+'</div><p class="sm">Pendiente de implementar: bandeja de respuestas, notificaciones, documentos seguros, denuncias y panel de administración real.</p>'};
-function route(){var h=location.hash.replace(/\?.*$/,"")||"#/",app=$("#app"),p=h.split("/");authBar();
-var out=h==="#/"?V.home():h==="#/explorar"?V.explorar():h==="#/como"?V.como():h==="#/entrar"?V.entrar():h==="#/publicar"?V.publicar():h==="#/panel"?V.panel():p[1]==="p"?V.proyecto(p[2]):V.home();
-app.innerHTML=out;if(h==="#/explorar")bindF();window.scrollTo(0,0)}
-window.addEventListener("hashchange",route);route();
+
+V.proyecto=async function(id){
+  var p=ok(await sb.from("projects").select("*").eq("id",id).maybeSingle());
+  if(!p)return '<h2>Proyecto no encontrado</h2><p class="sm">Puede que todavía no esté publicado.</p>';
+  var o=(await sb.from("profiles").select("name").eq("id",p.owner).maybeSingle()).data;
+  var pc=p.goal>0?Math.round(p.raised/p.goal*100):0,f=FAVS.indexOf(p.id)>-1,mine=ME&&ME.id===p.owner;
+  return '<h2>'+esc(p.name)+'</h2>'+(p.status!=="publicado"?'<div class="warn">Estado: <b>'+ST[p.status]+'</b>. Solo vos y el equipo de revisión pueden ver este proyecto.</div>':'')
+  +'<div class="two"><div><div class="panel"><p class="sm">Creador: '+esc(o?o.name:"—")+' · Publicado el '+fdate(p.created_at)+'</p><h3>Descripción</h3><p>'+esc(p.description)+'</p><h3>Problema</h3><p>'+esc(p.problem)+'</p><h3>Solución</h3><p>'+esc(p.solution)+'</p><h3>Destino de los fondos</h3><p>'+esc(p.use_of_funds)+'</p><h3>Equipo</h3><p>'+esc(p.team)+'</p></div><div class="panel"><h3>Modalidad: '+esc(p.mode)+'</h3><p>'+MODEINFO[p.mode]+'</p><div class="warn">Esta modalidad está sujeta a revisión legal. Invertir o aportar implica riesgos y no se garantiza rentabilidad. Impulsar no verifica ni garantiza la información publicada por los emprendedores.</div></div></div>'
+  +'<div><div class="panel"><span class="tag">'+esc(p.category)+'</span><span class="tag">📍 '+esc(p.province)+'</span><span class="tag">'+esc(p.stage)+'</span><h3 style="margin:10px 0 0">'+ars(p.raised)+'</h3><div class="sm">recaudado de '+ars(p.goal)+'</div><div class="bar"><b style="width:'+Math.min(pc,100)+'%"></b></div><div class="sm">'+pc+'% alcanzado</div><div class="row">'+(mine?'':'<button class="btn" onclick="msgBox(\''+p.id+'\',\''+p.owner+'\')">Contactar al creador</button>')+'<button class="btn o" onclick="fav(\''+p.id+'\')">'+(f?'★ Guardado':'☆ Guardar')+'</button></div></div></div></div>';
+};
+function msgBox(pid,to){
+  if(!ME){toast("Iniciá sesión para enviar mensajes");return go("#/entrar")}
+  var m=document.createElement("div");m.className="modal";
+  m.innerHTML='<div><h3>Enviar mensaje</h3><textarea id="mt" rows="5" maxlength="2000" placeholder="Escribí tu mensaje…"></textarea><p class="sm">No compartas datos bancarios ni contraseñas.</p><div class="row"><button class="btn" id="ms">Enviar</button><button class="btn o" id="mc">Cancelar</button></div></div>';
+  document.body.appendChild(m);
+  $("#mc").onclick=function(){m.remove()};
+  $("#ms").onclick=async function(){
+    var t=$("#mt").value.trim();if(t.length<5)return toast("Escribí al menos 5 caracteres");
+    var r=await sb.from("messages").insert({project_id:pid,from_user:ME.id,to_user:to,body:t});
+    if(r.error)return toast("No se pudo enviar: "+r.error.message);
+    m.remove();toast("Mensaje enviado");
+  };
+}
+
+V.entrar=async function(){
+  var reg=location.hash.indexOf("r=1")>-1;
+  return '<div class="panel" style="max-width:440px;margin:40px auto"><h2 style="margin-top:0">'+(reg?"Crear cuenta":"Iniciar sesión")+'</h2>'+(reg?'<label>Nombre o nombre comercial</label><input id="un"><label>Rol</label><select id="ur"><option>Emprendedor</option><option>Inversor</option><option>Ambos</option></select>':'')+'<label>Correo electrónico</label><input id="ue" type="email"><label>Contraseña (mínimo 8 caracteres)</label><input id="up" type="password"><div class="row"><button class="btn" onclick="doAuth('+reg+')">Continuar</button><a class="btn o" href="#/entrar'+(reg?'':'?r=1')+'">'+(reg?"Ya tengo cuenta":"Crear cuenta")+'</a></div></div>';
+};
+async function doAuth(reg){
+  var e=$("#ue").value.trim(),pw=$("#up").value,r;
+  if(!/^\S+@\S+\.\S+$/.test(e)||pw.length<8)return toast("Ingresá un correo válido y una contraseña de 8 o más caracteres");
+  if(reg){
+    var n=$("#un").value.trim();if(n.length<2)return toast("Ingresá tu nombre");
+    r=await sb.auth.signUp({email:e,password:pw,options:{data:{name:n,role:$("#ur").value}}});
+    if(r.error)return toast(r.error.message);
+    if(!r.data.session){$("#app").innerHTML='<div class="panel" style="max-width:440px;margin:40px auto"><h3>Revisá tu correo</h3><p>Te enviamos un mensaje para confirmar tu cuenta. Después podés iniciar sesión.</p></div>';return}
+  }else{
+    r=await sb.auth.signInWithPassword({email:e,password:pw});
+    if(r.error)return toast("Correo o contraseña incorrectos");
+  }
+  go("#/panel");
+}
+
+V.publicar=async function(){
+  if(!ME)return '<div class="panel" style="margin-top:30px"><h2 style="margin-top:0">Publicá tu proyecto</h2><p>Necesitás una cuenta para presentar un proyecto.</p><a class="btn" href="#/entrar?r=1">Registrarme</a></div>';
+  return '<h2>Presentar un proyecto</h2><div class="panel"><label>Nombre del proyecto</label><input id="n" maxlength="80"><label>Descripción breve</label><input id="d" maxlength="200"><label>Problema que resuelve</label><textarea id="pr" rows="3"></textarea><label>Solución propuesta</label><textarea id="so" rows="3"></textarea><label>Categoría</label><select id="c">'+opts(CATS)+'</select><label>Provincia</label><select id="pv">'+opts(PROVS)+'</select><label>Etapa</label><select id="st">'+opts(STAGES)+'</select><label>Monto necesario (ARS)</label><input id="g" type="number" min="1000"><label>Desglose del uso de fondos</label><textarea id="u" rows="3"></textarea><label>Equipo</label><input id="t"><label>Modalidad de financiación</label><select id="m">'+opts(MODES)+'</select><div class="warn">Tu proyecto no se hace público de inmediato: queda “En revisión” hasta que el equipo de Impulsar lo apruebe. Aún no se pueden subir imágenes ni documentos.</div><div class="row"><button class="btn o" onclick="saveP(\'borrador\')">Guardar borrador</button><button class="btn" onclick="saveP(\'en_revision\')">Enviar a revisión</button></div></div>';
+};
+async function saveP(status){
+  var g=+$("#g").value,n=$("#n").value.trim(),d=$("#d").value.trim();
+  if(n.length<3||d.length<10||!(g>0))return toast("Completá nombre, descripción (mín. 10 caracteres) y un monto válido");
+  var r=await sb.from("projects").insert({owner:ME.id,name:n,description:d,problem:$("#pr").value.trim(),solution:$("#so").value.trim(),use_of_funds:$("#u").value.trim(),team:$("#t").value.trim(),category:$("#c").value,province:$("#pv").value,stage:$("#st").value,goal:g,mode:$("#m").value,status:status});
+  if(r.error)return toast("No se pudo guardar: "+r.error.message);
+  T="proyectos";toast(status==="borrador"?"Borrador guardado":"Enviado a revisión. Te avisamos en tu panel.");go("#/panel");
+}
+async function submitP(id){var r=await sb.from("projects").update({status:"en_revision"}).eq("id",id);if(r.error)return toast(r.error.message);toast("Enviado a revisión");route()}
+async function setStatus(id,s){
+  var u={status:s,reviewed_at:new Date().toISOString(),reject_reason:null};
+  if(s==="rechazado"){var m=prompt("Motivo del rechazo (lo verá el emprendedor):");if(m===null)return;u.reject_reason=m.trim()||"Sin motivo indicado"}
+  var r=await sb.from("projects").update(u).eq("id",id);if(r.error)return toast(r.error.message);
+  toast(s==="publicado"?"Proyecto aprobado y publicado":"Proyecto rechazado");route();
+}
+function tab(t){T=t;route()}
+
+/* ---------- panel ---------- */
+var PT={};
+PT.proyectos=async function(){
+  var l=ok(await sb.from("projects").select("*").eq("owner",ME.id).order("created_at",{ascending:false}))||[];
+  return '<div class="panel"><h3>Mis proyectos</h3>'+(l.length?l.map(function(p){return '<p><b><a href="#/p/'+p.id+'"><u>'+esc(p.name)+'</u></a></b> · '+ars(p.goal)+' · <span class="tag">'+ST[p.status]+'</span> <span class="sm">'+fdate(p.created_at)+'</span>'+(p.status==="rechazado"?'<br><span class="sm">Motivo: '+esc(p.reject_reason)+'</span>':'')+((p.status==="borrador"||p.status==="rechazado")?' <button class="btn o" style="padding:4px 10px;font-size:12px" onclick="submitP(\''+p.id+'\')">Enviar a revisión</button>':'')+'</p>'}).join(""):'<p class="sm">Todavía no presentaste proyectos. <a href="#/publicar"><u>Presentar uno</u></a></p>')+'</div>';
+};
+PT.favoritos=async function(){
+  var l=FAVS.length?ok(await sb.from("projects").select("*").in("id",FAVS)):[];
+  return '<div class="panel"><h3>Favoritos</h3><div class="grid">'+(l.map(card).join("")||'<p class="sm">Sin favoritos.</p>')+'</div></div>';
+};
+PT.mensajes=async function(){
+  var l=ok(await sb.from("messages").select("*,projects(name),sender:profiles!from_user(name),recipient:profiles!to_user(name)").or("from_user.eq."+ME.id+",to_user.eq."+ME.id).order("created_at",{ascending:false}))||[];
+  return '<div class="panel"><h3>Mensajes</h3>'+(l.map(function(m){var rec=m.to_user===ME.id;return '<p class="sm"><b>'+esc(m.projects?m.projects.name:"Proyecto")+'</b> · '+(rec?'Recibido de '+esc(m.sender?m.sender.name:"—"):'Enviado a '+esc(m.recipient?m.recipient.name:"—"))+' · '+fdate(m.created_at)+'<br>'+esc(m.body)+(rec?'<br><button class="btn o" style="padding:4px 10px;font-size:12px" onclick="msgBox(\''+m.project_id+'\',\''+m.from_user+'\')">Responder</button>':'')+'</p>'}).join("")||'<p class="sm">Sin mensajes.</p>')+'</div>';
+};
+PT.revision=async function(){
+  var l=ok(await sb.from("projects").select("*,owner_profile:profiles!owner(name)").eq("status","en_revision").order("created_at"))||[];
+  return '<div class="panel"><h3>Proyectos esperando tu aprobación</h3>'+(l.length?l.map(function(p){return '<div class="panel" style="margin-top:12px"><b>'+esc(p.name)+'</b> · '+ars(p.goal)+' · '+esc(p.mode)+'<br><span class="sm">Por '+esc(p.owner_profile?p.owner_profile.name:"—")+' · '+esc(p.category)+' · '+esc(p.province)+' · '+esc(p.stage)+' · enviado el '+fdate(p.created_at)+'</span><p>'+esc(p.description)+'</p><p class="sm"><b>Problema:</b> '+esc(p.problem)+'<br><b>Solución:</b> '+esc(p.solution)+'<br><b>Uso de fondos:</b> '+esc(p.use_of_funds)+'<br><b>Equipo:</b> '+esc(p.team)+'</p><div class="row"><button class="btn" onclick="setStatus(\''+p.id+'\',\'publicado\')">Aprobar y publicar</button><button class="btn o" onclick="setStatus(\''+p.id+'\',\'rechazado\')">Rechazar</button></div></div>'}).join(""):'<p class="sm">No hay solicitudes pendientes.</p>')+'</div>';
+};
+V.panel=async function(){
+  if(!ME)return V.entrar();
+  var adm=!!(PROF&&PROF.is_admin),tabs=[["proyectos","Mis proyectos"],["favoritos","Favoritos"],["mensajes","Mensajes"]];
+  if(adm){var c=await sb.from("projects").select("id",{count:"exact",head:true}).eq("status","en_revision");tabs.push(["revision","Solicitudes de revisión ("+(c.count||0)+")"])}
+  if(T==="revision"&&!adm)T="proyectos";
+  var body=await PT[T]();
+  return '<h2>Hola, '+esc(PROF?PROF.name:"")+'</h2><div class="row" style="margin:0 0 6px">'+tabs.map(function(t){return '<button class="btn'+(T===t[0]?'':' o')+'" onclick="tab(\''+t[0]+'\')">'+t[1]+'</button>'}).join("")+'</div>'+body;
+};
+
+/* ---------- router ---------- */
+async function route(){
+  var h=location.hash.replace(/\?.*$/,"")||"#/",p=h.split("/"),out;
+  try{
+    out=h==="#/explorar"?await V.explorar():h==="#/como"?await V.como():h==="#/entrar"?await V.entrar():h==="#/publicar"?await V.publicar():h==="#/panel"?await V.panel():p[1]==="p"?await V.proyecto(p[2]):await V.home();
+  }catch(e){out='<div class="warn">Ocurrió un error: '+esc(e.message||e)+'</div>'}
+  $("#app").innerHTML=out;
+  if(h==="#/explorar"&&$("#fq"))bindF();
+  window.scrollTo(0,0);
+}
+async function init(){
+  if(CFG.URL.indexOf("TU-PROYECTO")>-1){
+    $("#app").innerHTML='<div class="panel" style="margin-top:30px"><h2 style="margin-top:0">Falta configurar Supabase</h2><p>Abrí este archivo, buscá <b>CFG</b> al principio del script y pegá la URL y la clave pública (anon) de tu proyecto de Supabase. Antes, ejecutá <b>schema.sql</b> en el editor SQL de Supabase.</p></div>';return;
+  }
+  sb=supabase.createClient(CFG.URL,CFG.KEY);
+  await setUser((await sb.auth.getSession()).data.session);
+  sb.auth.onAuthStateChange(function(ev,s){var nid=s?s.user.id:null;if(nid===(ME?ME.id:null))return;setTimeout(function(){setUser(s).then(route)},0)});
+  window.addEventListener("hashchange",route);
+  route();
+}
+init();
 </script>
 </body>
 </html>
