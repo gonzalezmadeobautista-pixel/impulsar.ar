@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Impulsar · Financiación de proyectos en Argentina</title>
+<style>
+:root{--navy:#0B1F3A;--navy2:#13305a;--bg:#F4F6F9;--card:#fff;--tx:#14213d;--mut:#5b6b82;--ac:#14B8A6;--ac2:#0d9488;--bd:#e3e8ef;--warn:#fff7e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1424;--card:#10213b;--tx:#e8eef7;--mut:#9fb0c8;--bd:#1f3558;--warn:#3a3114}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--tx);line-height:1.5}
+a{color:inherit;text-decoration:none}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--navy);color:#fff}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--navy);z-index:30}
+.nav{max-width:1100px;margin:auto;display:flex;align-items:center;gap:6px;padding:12px 16px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:20px;margin-right:auto;display:flex;gap:8px;align-items:center}
+.logo i{width:26px;height:26px;border-radius:8px;background:var(--ac);display:inline-block}
+.nav a,.nav button.l{padding:8px 10px;border-radius:8px;color:#dbe6f5;font-size:14px;background:none;border:0;cursor:pointer;font-family:inherit}
+.nav a:hover,.nav button.l:hover{background:var(--navy2)}
+.btn{display:inline-block;border:0;cursor:pointer;font-family:inherit;font-weight:600;font-size:15px;padding:11px 18px;border-radius:10px;background:var(--ac);color:#04231f;transition:.2s}
+.btn:hover{background:#2dd4bf;transform:translateY(-1px)}
+.btn.o{background:transparent;border:1.5px solid var(--bd);color:var(--tx)}.btn.o:hover{background:var(--card)}
+.btn.w{background:#fff;color:var(--navy)}
+main{max-width:1100px;margin:auto;padding:0 16px 60px}
+.hero{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;margin:0 -16px;padding:64px 16px}
+.hero>div{max-width:1100px;margin:auto}
+.hero h1{font-size:clamp(30px,6vw,52px);line-height:1.1;margin:0 0 14px;max-width:700px}
+.hero p{font-size:18px;color:#c6d6ee;max-width:620px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+h2{font-size:26px;margin:44px 0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;transition:.25s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(11,31,58,.14)}
+.thumb{height:110px;display:flex;align-items:center;justify-content:center;font-size:46px;position:relative}
+.demo{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 8px;border-radius:99px}
+.cb{padding:16px}.cb h3{margin:6px 0}.cb p{color:var(--mut);font-size:14px;margin:0 0 10px}
+.tag{display:inline-block;font-size:12px;background:var(--bg);border:1px solid var(--bd);padding:2px 9px;border-radius:99px;margin:0 4px 4px 0;color:var(--mut)}
+.bar{height:8px;background:var(--bd);border-radius:9px;overflow:hidden;margin:8px 0}.bar b{display:block;height:100%;background:var(--ac);border-radius:9px;transition:width .8s}
+.sm{font-size:13px;color:var(--mut)}
+.filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:18px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--bd);border-radius:10px;font:inherit;background:var(--card);color:var(--tx)}
+label{font-size:13px;font-weight:600;display:block;margin:12px 0 4px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.step{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:20px}.step span{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--ac);color:#04231f;font-weight:800}
+.warn{background:var(--warn);border:1px solid #e8c95a;border-radius:12px;padding:12px 14px;font-size:13px;margin:14px 0}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:22px;margin-top:14px}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:18px}@media(max-width:800px){.two{grid-template-columns:1fr}}
+.cta{background:var(--navy);color:#fff;border-radius:20px;padding:40px 20px;text-align:center;margin-top:44px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;z-index:50;padding:16px}
+.modal>div{background:var(--card);padding:22px;border-radius:16px;max-width:440px;width:100%}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;z-index:60;font-size:14}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}.stat div{background:var(--bg);border-radius:12px;padding:14px}.stat b{font-size:24px;display:block}
+footer{text-align:center;color:var(--mut);font-size:13px;padding:20px 16px}
+</style>
+</head>
+<body>
+<header><div class="nav">
+<a class="logo" href="#/"><i></i>Impulsar</a>
+<a href="#/explorar">Explorar proyectos</a><a href="#/publicar">Publicar un proyecto</a><a href="#/como">Cómo funciona</a>
+<span id="auth"></span><a class="btn" href="#/publicar" style="color:#04231f">Publicá tu proyecto</a>
+</div></header>
+<main id="app"></main>
+<footer>Prototipo MVP · Los proyectos de ejemplo son ficticios. Esta versión guarda datos solo en tu navegador (sin servidor). Invertir implica riesgos, incluida la pérdida del capital.</footer>
+<script>
+var CATS=["Tecnología e inteligencia artificial","Aplicaciones y software","Alimentos y bebidas","Moda y diseño","Salud y bienestar","Educación","Medioambiente","Industria y producción","Comercio","Servicios","Proyectos sociales","Otros emprendimientos"];
+var PROVS=["Buenos Aires","CABA","Catamarca","Chaco","Chubut","Córdoba","Corrientes","Entre Ríos","Formosa","Jujuy","La Pampa","La Rioja","Mendoza","Misiones","Neuquén","Río Negro","Salta","San Juan","San Luis","Santa Cruz","Santa Fe","Santiago del Estero","Tierra del Fuego","Tucumán"];
+var STAGES=["Idea","Prototipo","Primeras ventas","Negocio en crecimiento"];
+var MODES=["Participación","Préstamo","Recompensas / preventa","Aporte sin contraprestación"];
+var MODEINFO={"Participación":"Se aporta capital a cambio de una posible participación societaria. Requiere estructura legal válida y revisión normativa (CNV). Riesgo: pérdida total del capital.","Préstamo":"El emprendedor devuelve el dinero con plazos e intereses acordados. Riesgo: incumplimiento o demoras.","Recompensas / preventa":"El aporte se canjea por un producto o servicio futuro. Riesgo: demoras o que el producto no se concrete.","Aporte sin contraprestación":"Apoyo sin devolución económica esperada."};
+var DEMO=[
+{id:"d1",name:"Alma Textil",cat:"Moda y diseño",desc:"Indumentaria sustentable con fibras recicladas, primera colección cápsula.",goal:5000000,raised:1850000,stage:"Prototipo",prov:"CABA",mode:"Recompensas / preventa",e:"🧵",c:"#d9f2ee",problem:"La moda rápida genera residuos textiles enormes.",sol:"Prendas con 70% de fibra reciclada, producción local en lotes chicos.",use:"Telas 40%, confección 35%, marca y fotos 15%, logística 10%.",team:"2 diseñadoras y 1 contadora."},
+{id:"d2",name:"Kioskito App",cat:"Aplicaciones y software",desc:"App para que pequeños comercios gestionen stock, ventas y fiado.",goal:3200000,raised:960000,stage:"Primeras ventas",prov:"Córdoba",mode:"Participación",e:"📱",c:"#dbe7fb",problem:"Los kioscos llevan todo en cuadernos.",sol:"App simple en celular con control de stock y cuentas corrientes.",use:"Desarrollo 55%, marketing 30%, soporte 15%.",team:"3 desarrolladores y 1 comercial."},
+{id:"d3",name:"Granja Sana",cat:"Alimentos y bebidas",desc:"Snacks saludables de legumbres y semillas, sin conservantes.",goal:2400000,raised:2160000,stage:"Negocio en crecimiento",prov:"Mendoza",mode:"Préstamo",e:"🥜",c:"#fde9c9",problem:"Pocos snacks saludables accesibles.",sol:"Línea de snacks con insumos regionales.",use:"Maquinaria 50%, packaging 25%, capital de trabajo 25%.",team:"Familia productora, 4 personas."},
+{id:"d4",name:"AgroSensor",cat:"Tecnología e inteligencia artificial",desc:"Sensores de bajo costo para medir humedad del suelo y optimizar riego.",goal:8500000,raised:1700000,stage:"Prototipo",prov:"Santa Fe",mode:"Participación",e:"🌾",c:"#e3f3d3",problem:"El riego ineficiente desperdicia agua y rinde menos.",sol:"Sensores con alertas por WhatsApp.",use:"Hardware 45%, I+D 30%, pilotos 25%.",team:"Ing. agrónomo, ingeniero electrónico y data scientist."},
+{id:"d5",name:"ReCiclo Barrio",cat:"Medioambiente",desc:"Red de recolección y reciclaje de plásticos con puntos barriales.",goal:1800000,raised:450000,stage:"Idea",prov:"Tucumán",mode:"Aporte sin contraprestación",e:"♻️",c:"#d6f0e4",problem:"Falta de infraestructura de reciclaje barrial.",sol:"Puntos de acopio y compra de material a cartoneros cooperativos.",use:"Vehículo 50%, balanzas 20%, difusión 30%.",team:"Cooperativa de 6 integrantes."},
+{id:"d6",name:"Aprendé Hoy",cat:"Educación",desc:"Plataforma educativa con tutorías personalizadas para secundaria.",goal:4000000,raised:1000000,stage:"Primeras ventas",prov:"Neuquén",mode:"Recompensas / preventa",e:"🎓",c:"#ece0fa",problem:"Brechas de aprendizaje en matemática y lengua.",sol:"Tutorías online con seguimiento y material adaptado.",use:"Contenidos 40%, plataforma 40%, difusión 20%.",team:"4 docentes y 1 desarrollador."}];
+var $=function(s){return document.querySelector(s)};
+function ld(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+var S={user:ld("imp_user",null),favs:ld("imp_favs",[]),mine:ld("imp_mine",[]),msgs:ld("imp_msgs",[]),ints:ld("imp_ints",[])};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function ars(n){return new Intl.NumberFormat("es-AR",{style:"currency",currency:"ARS",maximumFractionDigits:0}).format(n)}
+function fdate(d){return new Date(d).toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function toast(t){var d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},2600)}
+function all(){return DEMO.concat(S.mine.filter(function(p){return p.status==="Publicado"}))}
+function opts(a,sel){return a.map(function(x){return '<option'+(x===sel?' selected':'')+'>'+esc(x)+'</option>'}).join("")}
+function card(p){var pc=Math.round(p.raised/p.goal*100),f=S.favs.indexOf(p.id)>-1;
+return '<div class="card"><div class="thumb" style="background:'+(p.c||"#e6eef8")+'">'+(p.e||"💡")+(p.demo!==false&&String(p.id)[0]==="d"?'<span class="demo">EJEMPLO FICTICIO</span>':'')+'</div><div class="cb"><span class="sm">'+esc(p.cat)+'</span><h3>'+esc(p.name)+'</h3><p>'+esc(p.desc)+'</p><div><span class="tag">📍 '+esc(p.prov)+'</span><span class="tag">'+esc(p.stage)+'</span><span class="tag">'+esc(p.mode)+'</span></div><div class="bar"><b style="width:'+Math.min(pc,100)+'%"></b></div><div class="sm"><b>'+ars(p.raised)+'</b> de '+ars(p.goal)+' · '+pc+'%</div><div class="row" style="margin-top:12px"><a class="btn" href="#/p/'+p.id+'">Ver proyecto</a><button class="btn o" onclick="fav(\''+p.id+'\')">'+(f?'★':'☆')+'</button></div></div></div>'}
+function fav(id){if(!S.user){toast("Iniciá sesión para guardar favoritos");return go("#/entrar")}
+var i=S.favs.indexOf(id);i>-1?S.favs.splice(i,1):S.favs.push(id);sv("imp_favs",S.favs);route()}
+function go(h){location.hash=h}
+function authBar(){$("#auth").innerHTML=S.user?'<a href="#/panel">👤 '+esc(S.user.name)+'</a><button class="l" onclick="logout()">Salir</button>':'<a href="#/entrar">Iniciar sesión</a><a href="#/entrar?r=1">Registrarse</a>'}
+function logout(){S.user=null;sv("imp_user",null);route();toast("Sesión cerrada")}
+var V={};
+V.home=function(){return '<section class="hero"><div><h1>Las grandes ideas necesitan oportunidades.</h1><p>Conectamos emprendedores que buscan financiación con personas que quieren impulsar los próximos grandes proyectos de Argentina.</p><div class="row"><a class="btn" href="#/publicar">Tengo un proyecto</a><a class="btn w" href="#/explorar">Quiero financiar ideas</a></div></div></section><h2>Proyectos destacados</h2><div class="warn">Los proyectos de esta sección son <b>ejemplos ficticios</b> para probar la experiencia. No representan inversiones ni personas reales.</div><div class="grid">'+DEMO.slice(0,3).map(card).join("")+'</div><div class="row"><a class="btn o" href="#/explorar">Ver todos con filtros</a></div><h2>Cómo funciona</h2>'+steps()+'<h2>Confianza y transparencia</h2><div class="steps"><div class="step"><b>🔍 Revisión de proyectos</b><p class="sm">Todo proyecto pasa por revisión manual antes de publicarse.</p></div><div class="step"><b>🪪 Verificación de identidad</b><p class="sm">Prevista como función futura. Hoy no marcamos a nadie como “verificado”.</p></div><div class="step"><b>📄 Condiciones claras</b><p class="sm">Cada modalidad muestra sus condiciones y riesgos. No garantizamos rentabilidad.</p></div></div><div class="cta"><h2 style="margin:0 0 16px">Tu próxima gran oportunidad puede empezar acá.</h2><div class="row" style="justify-content:center"><a class="btn" href="#/publicar">Publicar un proyecto</a><a class="btn w" href="#/explorar">Explorar oportunidades</a></div></div>'};
+function steps(){return '<div class="steps"><div class="step"><span>1</span><h3>Publicá tu idea</h3><p class="sm">Explicá qué necesitás y cuánto dinero requiere tu proyecto.</p></div><div class="step"><span>2</span><h3>Conectá con interesados</h3><p class="sm">Recibí consultas y propuestas de personas que quieren financiarla.</p></div><div class="step"><span>3</span><h3>Desarrollá y compartí avances</h3><p class="sm">Contá cómo avanzás, según los acuerdos establecidos.</p></div></div>'}
+V.como=function(){return '<h2>Cómo funciona</h2>'+steps()+'<h2>Modalidades</h2><div class="grid">'+MODES.map(function(m){return '<div class="step"><b>'+m+'</b><p class="sm">'+MODEINFO[m]+'</p></div>'}).join("")+'</div><div class="warn">⚠️ En esta primera versión Impulsar es un espacio de publicación, descubrimiento y contacto. No procesa pagos ni custodia fondos hasta completar la revisión legal (CNV, prevención de lavado de activos, protección de datos).</div>'};
+var F={q:"",cat:"",prov:"",stage:"",mode:"",max:"",sort:"nov",fav:false};
+V.explorar=function(){return '<h2>Explorar proyectos</h2><div class="filters"><input id="fq" placeholder="Buscar…" value="'+esc(F.q)+'"><select id="fc"><option value="">Categoría</option>'+opts(CATS,F.cat)+'</select><select id="fp"><option value="">Provincia</option>'+opts(PROVS,F.prov)+'</select><select id="fs"><option value="">Etapa</option>'+opts(STAGES,F.stage)+'</select><select id="fm"><option value="">Modalidad</option>'+opts(MODES,F.mode)+'</select><select id="fx"><option value="">Monto máx.</option>'+[2000000,5000000,10000000].map(function(v){return '<option value="'+v+'"'+(String(v)===F.max?' selected':'')+'>Hasta '+ars(v)+'</option>'}).join("")+'</select><select id="fo"><option value="nov"'+(F.sort==="nov"?" selected":"")+'>Novedades</option><option value="pct"'+(F.sort==="pct"?" selected":"")+'>% de financiación</option><option value="pop"'+(F.sort==="pop"?" selected":"")+'>Popularidad</option></select></div><label style="display:inline-flex;gap:6px;align-items:center;margin:0 0 14px"><input type="checkbox" id="ff" style="width:auto"'+(F.fav?" checked":"")+'> Solo mis favoritos</label><div class="grid" id="list"></div>'};
+function list(){var r=all().filter(function(p){return(!F.q||(p.name+p.desc+p.cat).toLowerCase().indexOf(F.q.toLowerCase())>-1)&&(!F.cat||p.cat===F.cat)&&(!F.prov||p.prov===F.prov)&&(!F.stage||p.stage===F.stage)&&(!F.mode||p.mode===F.mode)&&(!F.max||p.goal<=+F.max)&&(!F.fav||S.favs.indexOf(p.id)>-1)});
+if(F.sort==="pct")r.sort(function(a,b){return b.raised/b.goal-a.raised/a.goal});else if(F.sort==="pop")r.sort(function(a,b){return b.raised-a.raised});else r.reverse();
+$("#list").innerHTML=r.length?r.map(card).join(""):'<p class="sm">No hay proyectos con esos filtros.</p>'}
+function bindF(){[["fq","q"],["fc","cat"],["fp","prov"],["fs","stage"],["fm","mode"],["fx","max"],["fo","sort"]].forEach(function(x){$("#"+x[0]).oninput=function(){F[x[1]]=this.value;list()}});$("#ff").onchange=function(){F.fav=this.checked;list()};list()}
+V.proyecto=function(id){var p=all().find(function(x){return x.id===id});if(!p)return '<h2>Proyecto no encontrado</h2>';var pc=Math.round(p.raised/p.goal*100),f=S.favs.indexOf(p.id)>-1;
+return '<h2>'+(p.e||"💡")+' '+esc(p.name)+'</h2>'+(String(p.id)[0]==="d"?'<div class="warn">Proyecto de <b>demostración ficticio</b>. Los montos no son reales.</div>':'')+'<div class="two"><div><div class="panel"><h3>Problema</h3><p>'+esc(p.problem)+'</p><h3>Solución</h3><p>'+esc(p.sol)+'</p><h3>Destino de los fondos</h3><p>'+esc(p.use)+'</p><h3>Equipo</h3><p>'+esc(p.team)+'</p></div><div class="panel"><h3>Modalidad: '+esc(p.mode)+'</h3><p>'+MODEINFO[p.mode]+'</p><div class="warn">Esta modalidad está sujeta a revisión legal. Invertir o aportar implica riesgos y no se garantiza rentabilidad.</div></div></div><div><div class="panel"><span class="tag">'+esc(p.cat)+'</span><span class="tag">📍 '+esc(p.prov)+'</span><span class="tag">'+esc(p.stage)+'</span><h3 style="margin:10px 0 0">'+ars(p.raised)+'</h3><div class="sm">recaudado de '+ars(p.goal)+'</div><div class="bar"><b style="width:'+Math.min(pc,100)+'%"></b></div><div class="sm">'+pc+'% alcanzado</div><div class="row"><button class="btn" onclick="contact(\''+p.id+'\')">Contactar al creador</button><button class="btn o" onclick="interest(\''+p.id+'\')">Expresar interés</button><button class="btn o" onclick="fav(\''+p.id+'\')">'+(f?'★ Guardado':'☆ Guardar')+'</button></div><p class="sm">“Expresar interés” no es un compromiso ni suma dinero al indicador.</p></div></div></div>'};
+function contact(id){if(!S.user){toast("Iniciá sesión para contactar");return go("#/entrar")}
+var m=document.createElement("div");m.className="modal";m.innerHTML='<div><h3>Enviar mensaje</h3><textarea id="mt" rows="5" maxlength="1000" placeholder="Presentate y contá qué te interesa…"></textarea><p class="sm">No compartas datos bancarios ni contraseñas. Podés denunciar conversaciones sospechosas.</p><div class="row"><button class="btn" id="ms">Enviar</button><button class="btn o" id="mc">Cancelar</button></div></div>';document.body.appendChild(m);
+$("#mc").onclick=function(){m.remove()};$("#ms").onclick=function(){var t=$("#mt").value.trim();if(t.length<10)return toast("Escribí al menos 10 caracteres");S.msgs.push({pid:id,t:t,d:Date.now()});sv("imp_msgs",S.msgs);m.remove();toast("Mensaje enviado (guardado en tu panel)")}}
+function interest(id){if(!S.user){toast("Iniciá sesión primero");return go("#/entrar")}if(S.ints.indexOf(id)<0){S.ints.push(id);sv("imp_ints",S.ints)}toast("Interés registrado")}
+V.entrar=function(){var reg=location.hash.indexOf("r=1")>-1;return '<div class="panel" style="max-width:440px;margin:40px auto"><h2 style="margin-top:0">'+(reg?"Crear cuenta":"Iniciar sesión")+'</h2><div class="warn">Demo local: la cuenta se guarda solo en este navegador. La autenticación real (Supabase) es el próximo paso.</div><label>Nombre o nombre comercial</label><input id="un"><label>Correo electrónico</label><input id="ue" type="email"><label>Rol</label><select id="ur"><option>Emprendedor</option><option>Inversor</option><option>Ambos</option></select><div class="row"><button class="btn" onclick="login()">Continuar</button></div></div>'};
+function login(){var n=$("#un").value.trim(),e=$("#ue").value.trim();if(!n||!/^\S+@\S+\.\S+$/.test(e))return toast("Completá nombre y un correo válido");S.user={name:n,email:e,role:$("#ur").value,since:Date.now()};sv("imp_user",S.user);go("#/panel");toast("¡Bienvenido/a!")}
+V.publicar=function(){if(!S.user)return '<div class="panel" style="margin-top:30px"><h2 style="margin-top:0">Publicá tu proyecto</h2><p>Necesitás una cuenta para publicar.</p><a class="btn" href="#/entrar?r=1">Registrarme</a></div>';
+return '<h2>Publicar un proyecto</h2><div class="panel"><label>Nombre del proyecto</label><input id="n" maxlength="80"><label>Descripción breve</label><input id="d" maxlength="160"><label>Problema que resuelve</label><textarea id="pr" rows="3"></textarea><label>Solución propuesta</label><textarea id="so" rows="3"></textarea><label>Categoría</label><select id="c">'+opts(CATS)+'</select><label>Provincia</label><select id="pv">'+opts(PROVS)+'</select><label>Etapa</label><select id="st">'+opts(STAGES)+'</select><label>Monto necesario (ARS)</label><input id="g" type="number" min="1000"><label>Desglose del uso de fondos</label><textarea id="u" rows="3"></textarea><label>Equipo</label><input id="t"><label>Modalidad de financiación</label><select id="m">'+opts(MODES)+'</select><div class="warn">Antes de hacerse público, tu proyecto queda “En revisión”. Aún no se pueden subir imágenes ni documentos (próxima etapa).</div><div class="row"><button class="btn o" onclick="saveP(\'Borrador\')">Guardar borrador</button><button class="btn" onclick="saveP(\'En revisión\')">Enviar a revisión</button></div></div>'};
+function saveP(status){var g=+$("#g").value,n=$("#n").value.trim();if(n.length<3||!(g>0))return toast("Poné un nombre y un monto válido");
+S.mine.push({id:"u"+Date.now(),name:n,desc:$("#d").value.trim()||"Sin descripción",problem:$("#pr").value,sol:$("#so").value,use:$("#u").value,team:$("#t").value,cat:$("#c").value,prov:$("#pv").value,stage:$("#st").value,goal:g,raised:0,mode:$("#m").value,status:status,created:Date.now(),log:[{s:status,d:Date.now()}]});sv("imp_mine",S.mine);toast(status==="Borrador"?"Borrador guardado":"Enviado a revisión");go("#/panel")}
+function approve(id){var p=S.mine.find(function(x){return x.id===id});p.status="Publicado";p.log.push({s:"Publicado",d:Date.now()});sv("imp_mine",S.mine);route()}
+V.panel=function(){if(!S.user)return V.entrar();var mine=S.mine,favs=all().filter(function(p){return S.favs.indexOf(p.id)>-1});
+return '<h2>Hola, '+esc(S.user.name)+'</h2><div class="stat"><div><b>'+mine.length+'</b>Proyectos</div><div><b>'+favs.length+'</b>Favoritos</div><div><b>'+S.ints.length+'</b>Intereses</div><div><b>'+S.msgs.length+'</b>Mensajes enviados</div></div><div class="panel"><h3>Mis proyectos</h3>'+(mine.length?mine.map(function(p){return '<p><b>'+esc(p.name)+'</b> · '+ars(p.goal)+' · <span class="tag">'+p.status+'</span> <span class="sm">'+p.log.map(function(l){return l.s+" "+fdate(l.d)}).join(" → ")+'</span> '+(p.status==="En revisión"?'<button class="btn o" style="padding:4px 10px;font-size:12px" onclick="approve(\''+p.id+'\')">Simular aprobación (admin demo)</button>':'')+'</p>'}).join(""):'<p class="sm">Todavía no publicaste proyectos. <a href="#/publicar"><u>Publicar uno</u></a></p>')+'</div><div class="panel"><h3>Favoritos</h3><div class="grid">'+(favs.map(card).join("")||'<p class="sm">Sin favoritos.</p>')+'</div></div><div class="panel"><h3>Mensajes enviados</h3>'+(S.msgs.map(function(m){var p=all().find(function(x){return x.id===m.pid});return '<p class="sm"><b>'+esc(p?p.name:"Proyecto")+'</b> · '+fdate(m.d)+'<br>'+esc(m.t)+'</p>'}).join("")||'<p class="sm">Sin mensajes.</p>')+'</div><p class="sm">Pendiente de implementar: bandeja de respuestas, notificaciones, documentos seguros, denuncias y panel de administración real.</p>'};
+function route(){var h=location.hash.replace(/\?.*$/,"")||"#/",app=$("#app"),p=h.split("/");authBar();
+var out=h==="#/"?V.home():h==="#/explorar"?V.explorar():h==="#/como"?V.como():h==="#/entrar"?V.entrar():h==="#/publicar"?V.publicar():h==="#/panel"?V.panel():p[1]==="p"?V.proyecto(p[2]):V.home();
+app.innerHTML=out;if(h==="#/explorar")bindF();window.scrollTo(0,0)}
+window.addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
